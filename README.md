@@ -61,6 +61,38 @@ It is also fairly easy to configure all of this manually. The configuration file
 - You should not need to run any application code directly from your host machine. Try to force yourself to find a containerized way of accomplishing things.
 - Run `dev` without any arguments for lots of help
 
+## Environment Variables
+
+The nginx proxy supports several environment variables for configuring your services:
+
+### `CLIENT_MAX_BODY_SIZE`
+
+Controls the maximum allowed size of client request body. This is useful for services that need to handle large file uploads.
+
+**Usage:**
+```yaml
+services:
+  my-service:
+    environment:
+      - VIRTUAL_HOST=my-service.easyredir.test
+      - CLIENT_MAX_BODY_SIZE=100m
+```
+
+**Valid values:**
+- `1m` (default) - 1 megabyte
+- `10m` - 10 megabytes  
+- `100m` - 100 megabytes
+- `1g` - 1 gigabyte
+
+**Security Note:** Be careful when setting large values as they can be used for DoS attacks. Only set what you actually need for your service.
+
+### Other Environment Variables
+
+- `VIRTUAL_HOST` - The domain name for your service
+- `HTTPS_METHOD` - Controls HTTPS behavior (`redirect`, `noredirect`, `nohttps`)
+- `HSTS` - HTTP Strict Transport Security header
+- `SSL_POLICY` - SSL/TLS policy for the connection
+
 ### Troubleshooting
 
 #### When in doubt, restart

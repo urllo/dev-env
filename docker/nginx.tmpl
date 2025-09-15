@@ -234,6 +234,9 @@ upstream {{ $upstream_name }} {
 {{/* Get the HSTS defined by containers w/ the same vhost, falling back to "max-age=31536000" */}}
 {{ $hsts := or (first (groupByKeys $containers "Env.HSTS")) (or $.Env.HSTS "max-age=31536000") }}
 
+{{/* Get the CLIENT_MAX_BODY_SIZE defined by containers w/ the same vhost, falling back to "1m" */}}
+{{ $client_max_body_size := or (first (groupByKeys $containers "Env.CLIENT_MAX_BODY_SIZE")) (or $.Env.CLIENT_MAX_BODY_SIZE "1m") }}
+
 {{/* Get the VIRTUAL_ROOT By containers w/ use fastcgi root */}}
 {{ $vhost_root := or (first (groupByKeys $containers "Env.VIRTUAL_ROOT")) "/var/www/public" }}
 
@@ -266,6 +269,10 @@ server {
 	listen [::]:{{ $external_http_port }} {{ $default_server }};
 	{{ end }}
 	{{ $access_log }}
+
+	{{ if ne $client_max_body_size "1m" }}
+	client_max_body_size {{ $client_max_body_size }};
+	{{ end }}
 	
 	# Do not HTTPS redirect Let'sEncrypt ACME challenge
 	location ^~ /.well-known/acme-challenge/ {
@@ -297,6 +304,10 @@ server {
 	listen [::]:{{ $external_https_port }} ssl http2 {{ $default_server }};
 	{{ end }}
 	{{ $access_log }}
+
+	{{ if ne $client_max_body_size "1m" }}
+	client_max_body_size {{ $client_max_body_size }};
+	{{ end }}
 
 	{{ if eq $network_tag "internal" }}
 	# Only allow traffic from internal clients
@@ -373,6 +384,10 @@ server {
 	{{ end }}
 	{{ $access_log }}
 
+	{{ if ne $client_max_body_size "1m" }}
+	client_max_body_size {{ $client_max_body_size }};
+	{{ end }}
+
 	{{ if eq $network_tag "internal" }}
 	# Only allow traffic from internal clients
 	include /etc/nginx/network_internal.conf;
@@ -420,6 +435,11 @@ server {
 	listen [::]:{{ $external_https_port }} ssl http2 {{ $default_server }};
 	{{ end }}
 	{{ $access_log }}
+
+	{{ if ne $client_max_body_size "1m" }}
+	client_max_body_size {{ $client_max_body_size }};
+	{{ end }}
+
 	return 500;
 
 	ssl_certificate /etc/nginx/certs/default.crt;
