@@ -234,9 +234,6 @@ upstream {{ $upstream_name }} {
 {{/* Get the HSTS defined by containers w/ the same vhost, falling back to "max-age=31536000" */}}
 {{ $hsts := or (first (groupByKeys $containers "Env.HSTS")) (or $.Env.HSTS "max-age=31536000") }}
 
-{{/* Use larger proxy buffers only when backend sets PROXY_LARGE_BUFFERS=true (e.g. main app) */}}
-{{ $proxy_large_buffers := eq (or (first (groupByKeys $containers "Env.PROXY_LARGE_BUFFERS")) "false") "true" }}
-
 {{/* Get the VIRTUAL_ROOT By containers w/ use fastcgi root */}}
 {{ $vhost_root := or (first (groupByKeys $containers "Env.VIRTUAL_ROOT")) "/var/www/public" }}
 
@@ -347,10 +344,8 @@ server {
 		grpc_pass {{ trim $proto }}://{{ trim $upstream_name }};
 		{{ else }}
 		proxy_pass {{ trim $proto }}://{{ trim $upstream_name }};
-		{{ if $proxy_large_buffers }}
 		proxy_buffer_size 16k;
 		proxy_buffers 8 16k;
-		{{ end }}
 		{{ end }}
 
 		{{ if (exists (printf "/etc/nginx/htpasswd/%s" $host)) }}
@@ -403,11 +398,10 @@ server {
 		grpc_pass {{ trim $proto }}://{{ trim $upstream_name }};
 		{{ else }}
 		proxy_pass {{ trim $proto }}://{{ trim $upstream_name }};
-		{{ if $proxy_large_buffers }}
 		proxy_buffer_size 16k;
 		proxy_buffers 8 16k;
 		{{ end }}
-		{{ end }}
+		
 		{{ if (exists (printf "/etc/nginx/htpasswd/%s" $host)) }}
 		auth_basic	"Restricted {{ $host }}";
 		auth_basic_user_file	{{ (printf "/etc/nginx/htpasswd/%s" $host) }};
