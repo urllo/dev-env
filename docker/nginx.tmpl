@@ -344,6 +344,8 @@ server {
 		grpc_pass {{ trim $proto }}://{{ trim $upstream_name }};
 		{{ else }}
 		proxy_pass {{ trim $proto }}://{{ trim $upstream_name }};
+		proxy_buffer_size 16k;
+		proxy_buffers 8 16k;
 		{{ end }}
 
 		{{ if (exists (printf "/etc/nginx/htpasswd/%s" $host)) }}
@@ -396,7 +398,10 @@ server {
 		grpc_pass {{ trim $proto }}://{{ trim $upstream_name }};
 		{{ else }}
 		proxy_pass {{ trim $proto }}://{{ trim $upstream_name }};
+		proxy_buffer_size 16k;
+		proxy_buffers 8 16k;
 		{{ end }}
+		
 		{{ if (exists (printf "/etc/nginx/htpasswd/%s" $host)) }}
 		auth_basic	"Restricted {{ $host }}";
 		auth_basic_user_file	{{ (printf "/etc/nginx/htpasswd/%s" $host) }};
