@@ -1,4 +1,4 @@
-# EasyRedir dev-env
+# urllo dev-env
 
 ## What is this for?
 
@@ -10,7 +10,7 @@ First, install [Docker Desktop for Mac](https://docs.docker.com/desktop/mac/inst
 for your current Mac (either Intel or Apple Silicon). Then run this...
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/EasyRedir/dev-env/master/bin/bootstrap)
+bash <(curl -fsSL https://raw.githubusercontent.com/urllo/dev-env/master/bin/bootstrap)
 # Start a new shell and cd to a project that uses [Docker Compose](https://docs.docker.com/compose/)
 dev up
 ```
@@ -37,7 +37,7 @@ and will do these tasks:
 
 It should run idempotently, meaning you should be able to run it as many times as you want and it won't hurt anything. If it fails due to a temporary condition (like network issues), running it again should pick up where it left off. If new items are added to the script, running it against a functioning environment should only add the new things.
 
-    bash <(curl -fsSL https://raw.githubusercontent.com/EasyRedir/dev-env/master/bin/bootstrap)
+    bash <(curl -fsSL https://raw.githubusercontent.com/urllo/dev-env/master/bin/bootstrap)
 
 After a successful installation, you can run the bootstrap again or you can instead run:
 
@@ -74,7 +74,7 @@ Many issues can be solved by restarting the containers with `dev restart`. You c
 
 ## Contributing
 
-1. Fork it ( https://github.com/EasyRedir/dev-env/fork )
+1. Fork it ( https://github.com/urllo/dev-env/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
