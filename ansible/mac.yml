@@ -8,47 +8,47 @@
 
   tasks:
     - name: Check sudo Password
-      command: whoami
-      become: yes
-      become_method: sudo
+      ansible.builtin.command: whoami
+      become: true
+      changed_when: false
 
     - name: Create resolver directory
-      file: path=/etc/resolver state=directory mode=0755
-      become: yes
-      become_method: sudo
+      ansible.builtin.file:
+        path: /etc/resolver
+        state: directory
+        mode: "755"
+      become: true
 
     - name: Symlink .test resolver file at /etc/resolver/test
-      file:
+      ansible.builtin.file:
         src: "{{ dev_env_dir }}/ansible/resolver-test.conf"
         dest: /etc/resolver/test
         state: link
-        force: yes
-      become: yes
-      become_method: sudo
+        force: true
+      become: true
 
     - name: Restart mDNSResponder
-      command: killall -HUP mDNSResponder
-      become: yes
-      become_method: sudo
-      ignore_errors: yes
+      ansible.builtin.command: killall -HUP mDNSResponder
+      become: true
+      changed_when: true
+      failed_when: false
 
     - name: Kill any running mDNSResponderHelper processes
-      command: killall mDNSResponderHelper
-      become: yes
-      become_method: sudo
-      ignore_errors: yes
+      ansible.builtin.command: killall mDNSResponderHelper
+      become: true
+      changed_when: true
+      failed_when: false
 
     - name: Flush the DNS cache
-      command: dscacheutil -flushcache
-      become: yes
-      become_method: sudo
-      ignore_errors: yes
+      ansible.builtin.command: dscacheutil -flushcache
+      become: true
+      changed_when: true
+      failed_when: false
 
     - name: Symlink dev script in /usr/local/bin
-      file:
+      ansible.builtin.file:
         src: "{{ dev_env_dir }}/bin/dev"
         dest: /usr/local/bin/dev
         state: link
-        force: yes
-      become: yes
-      become_method: sudo
+        force: true
+      become: true
