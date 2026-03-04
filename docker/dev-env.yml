@@ -1,6 +1,6 @@
 services:
   proxy_web:
-    image: nginx:alpine
+    image: public.ecr.aws/nginx/nginx:alpine
     container_name: devenv_proxy_web
     ports:
       - "80:80"
@@ -24,7 +24,7 @@ services:
       - default
     restart: on-failure
   proxy_dns:
-    image: easyredir/dnsmasq
+    image: public.ecr.aws/g2p0k1v3/dnsmasq:latest
     ports:
       - "53:53/tcp"
       - "53:53/udp"
@@ -35,7 +35,7 @@ services:
       - default
     restart: on-failure
   haveged:
-    image: easyredir/haveged
+    image: public.ecr.aws/g2p0k1v3/haveged:latest
     privileged: true
     networks:
       - default
@@ -60,7 +60,7 @@ services:
     networks:
       - default
   mailcatcher:
-    image: easyredir/mailcatcher:latest
+    image: public.ecr.aws/g2p0k1v3/mailcatcher:latest
     environment:
       - VIRTUAL_HOST=mailcatcher.test
       - VIRTUAL_PORT=1080
