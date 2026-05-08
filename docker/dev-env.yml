@@ -1,25 +1,17 @@
 services:
   proxy_web:
-    image: public.ecr.aws/nginx/nginx:alpine
+    image: nginxproxy/nginx-proxy:1.10
     container_name: devenv_proxy_web
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - nginx_conf:/etc/nginx/conf.d
-      - nginx_certs:/etc/nginx/certs
-      - nginx_dhparam:/etc/nginx/dhparam
-    networks:
-      - default
-    restart: on-failure
-  proxy_dockergen:
-    build: .
-    volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - nginx_conf:/etc/nginx/conf.d
+      - ./urllo.test.crt:/etc/nginx/certs/urllo.test.crt:ro
+      - ./urllo.test.key:/etc/nginx/certs/urllo.test.key:ro
+      - ./easyredir.test.crt:/etc/nginx/certs/easyredir.test.crt:ro
+      - ./easyredir.test.key:/etc/nginx/certs/easyredir.test.key:ro
       - nginx_certs:/etc/nginx/certs
-      - nginx_dhparam:/etc/nginx/dhparam
-    command: -notify-sighup devenv_proxy_web -watch /etc/docker-gen/templates/nginx.tmpl /etc/nginx/conf.d/default.conf
     networks:
       - default
     restart: on-failure
@@ -69,8 +61,6 @@ services:
     networks:
       - default
 volumes:
-  nginx_conf:
   nginx_certs:
-  nginx_dhparam:
 networks:
   default:
